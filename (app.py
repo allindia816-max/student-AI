@@ -1,4 +1,5 @@
-import streamlit as st
+
+    import streamlit as st
 from PIL import Image
 import google.generativeai as genai
 
@@ -63,9 +64,9 @@ if user_query or uploaded_file:
                 st.success("আপনার ভিডিও তৈরি হয়ে গেছে!")
             else:
                 try:
-                    # জেমিনাই এপিআই কনফিগার ও নিখুঁত কল
+                    # জেমিনাই এপিআই কনফিগার ও নিখুঁত মডেল কল
                     genai.configure(api_key=gemini_key)
-                    model = genai.GenerativeModel('gemini-pro')
+                    model = genai.GenerativeModel('gemini-1.5-flash')
                     
                     context_note = f"\n\n[ভিডিও রেফারেন্স: {st.session_state.last_generated_video}]" if st.session_state.last_generated_video else ""
                     full_prompt = prompt_text + context_note
