@@ -2,11 +2,13 @@ import streamlit as st
 from PIL import Image
 import google.generativeai as genai
 
+# অ্যাপের পেজ সেটআপ
 st.set_page_config(page_title="Student AI", page_icon="🤖", layout="centered")
 
 st.title("🤖 Student AI (স্টুডেন্ট এআই)")
 st.write("আপনার স্মার্ট এআই অ্যাসিস্ট্যান্ট। একই চ্যাটে প্রশ্ন করুন, ছবি/ভিডিও দিন, অথবা ভিডিও বানিয়ে নিতে বলুন!")
 
+# --- সাইডবার: এআই ইঞ্জিন কি (API Keys) এবং চ্যাট ডিলিট অপশন ---
 st.sidebar.header("⚙️ এআই ইঞ্জিন ও সেটিংস")
 gemini_key = st.sidebar.text_input("Gemini API Key দিন:", type="password")
 runway_key = st.sidebar.text_input("Runway API Key দিন:", type="password")
@@ -17,16 +19,19 @@ if st.sidebar.button("🗑️ সব চ্যাট মুছে ফেলু�
     st.session_state.last_generated_video = None
     st.rerun()
 
+# --- চ্যাট মেমোরি ইনিশিয়ালাইজেশন ---
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
 if "last_generated_video" not in st.session_state:
     st.session_state.last_generated_video = None
 
+# আগের চ্যাটগুলো স্ক্রিনে দেখানো
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
+# --- ইনপুট বক্স ---
 uploaded_file = st.file_uploader("ছবি/ভিডিও আপলোড করুন:", type=["jpg", "jpeg", "png", "mp4", "mov"])
 user_query = st.chat_input("এখানে প্রশ্ন লিখুন...")
 
@@ -58,6 +63,7 @@ if user_query or uploaded_file:
                 st.success("আপনার ভিডিও তৈরি হয়ে গেছে!")
             else:
                 try:
+                    # জেমিনাই এপিআই কনফিগার ও নিখুঁত কল (মডেল আপডেট করা হয়েছে)
                     genai.configure(api_key=gemini_key)
                     model = genai.GenerativeModel('gemini-1.5-flash')
                     
@@ -77,4 +83,5 @@ if user_query or uploaded_file:
                     st.error(response_text)
             
     st.session_state.messages.append({"role": "assistant", "content": response_text})
+    
     
